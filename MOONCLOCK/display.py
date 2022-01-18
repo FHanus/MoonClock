@@ -34,7 +34,11 @@ class DisplayGroup:
         for display in self.displays:
             display.fill(0)
 
-    def render_string(self, string, center=False, empty_as_transparent=False):
+    def fill(self):
+        for display in self.displays:
+            display.fill(1)
+
+    def render_string(self, string, center=False, empty_as_transparent=True):
         string = center_string(string) if center else string
 
         for i, character in enumerate(string):
@@ -51,8 +55,11 @@ class DisplayGroup:
                 display.render_character(character, self.SECOND_CHARACTER_X_OFFSET)
 
     def contrast(self, contrast):
-        for display in self.displays:
-            display.contrast(contrast)
+        if 0 <= contrast <= 0xFF:
+            for display in self.displays:
+                display.contrast(contrast)
+        else:
+            raise ValueError('Invalid contrast value')
 
     def show(self):
         for display in self.displays:
