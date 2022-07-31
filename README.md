@@ -1,8 +1,6 @@
-### Hi there, I'm Pavol 👋 
-
-[![Instagram Follow](https://static.wixstatic.com/media/57724c_6b5ab8bf75cc4a33b90e16e340814ae9~mv2.png)](https://www.instagram.com/pavols_lab/)
-
 ### MoonClock website - https://moonclock.com
+
+This fork is translation of the original app into C language
 
 ## You have received and unboxed your MoonClock. Congratulations!
 
