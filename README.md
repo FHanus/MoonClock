@@ -1,4 +1,6 @@
-### MoonClock website - https://moonclock.com
+## MoonClock C version
+
+MoonClock website - https://moonclock.com
 
 This fork is translation of the original app into C language
 
