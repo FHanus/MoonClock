@@ -6,23 +6,15 @@ This fork is translation of the original app into C language
 
 What now?
 
-1. Plug MoonClock into your computer with provided USB-C cable. It will appear as a standard USB drive called "MOONCLOCK".
+1. Power your MoonClock.
 
-2. Open "secrets.py" with a text editor such as notepad and replace "WIFI_SSID" and "WIFI_PASSWORD" with your WiFi details and save.
+2. On any device, open Wi-Fi connections and you should see "MoonClock Configuration" access point, tap it and a website should open. If a website doesn't open, open browser and enter "192.168.4.1" in the address bar.
 
-3. Wait ~2minutes until Bitcoin price will appear on the MoonClock device.
+3. Select any necessary settings in the main tab and then update them.
 
 That's all!
 
 
-## Want more Crypto or just adjust the settings?
+## Want more to know all the possible options?
 
-We all love Bitcoin, sure, but maybe you want to see the current price in another currency or completely another Crypto? No problem. MoonClock is ready for that!
 
-1. Plug MoonClock into your computer with provided USB-C cable. It will appear as a standard USB drive called "MOONCLOCK".
-
-2. Remove all files & folders from the "MOONCLOCK" drive.
-
-3. Configure your cryptocurrencies in conf.py and copy the content of the CYCLE folder to the "MOONCLOCK" USB drive. (Don't forget to change your WiFi details again in the "secrets.py" file if you have to)
-
-Wait ~2 minutes until new crypto will be shown on MoonClock.
