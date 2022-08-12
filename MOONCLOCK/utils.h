@@ -1,27 +1,41 @@
 /* UTILS.H
  * 
  * Contains all the initialization functions
- * Revision: Filip Hanus, 30/07/2022
+ * Revision: Filip Hanus, 12/08/2022
  */
 
+void TCA9548A(uint8_t bus)
 // Select I2C BUS (for the I2C multiplexer)
-void TCA9548A(uint8_t bus){
+{
+  // buffer starts at 0, we initiate the displays starting from 1
   bus = bus-1;
+
+  // This is the I2C address of the multiplexer, begin serial comms with this address
   Wire.beginTransmission(0x70);  // TCA9548A address
-  Wire.write(1 << bus);          // send byte to select bus
+  
+  // Senf a byte to the selected adress
+  Wire.write(1 << bus);
+
+  // End the transmission
   Wire.endTransmission();
+
+  // If debugging is turned on display the transmitted message
   if(DEBUG)
     Serial.print(bus);
 }
 
+void setupdisplays()
 // Allocate displays
-void setupdisplays(){
+{
   // Start I2C communication with the Multiplexer
   Wire.begin();
 
   // Init OLED display on bus number 2 (display 1)
   TCA9548A(1);
+
+  // This statement secures the scenario if the allocation fails
   if(!display1.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    // If debugging is turned on print the error message
     if(DEBUG)
       Serial.println(F("SSD1306 allocation failed"));
     for(;;);
@@ -31,7 +45,10 @@ void setupdisplays(){
 
   // Init OLED display on bus number 3
   TCA9548A(2);
+  
+  // This statement secures the scenario if the allocation fails
   if(!display2.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    // If debugging is turned on print the error message
     if(DEBUG)
       Serial.println(F("SSD1306 allocation failed"));
     for(;;);
@@ -41,7 +58,10 @@ void setupdisplays(){
 
   // Init OLED display on bus number 4
   TCA9548A(3);
+  
+  // This statement secures the scenario if the allocation fails
   if(!display3.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    // If debugging is turned on print the error message
     if(DEBUG)
       Serial.println(F("SSD1306 allocation failed"));
     for(;;);
@@ -51,7 +71,10 @@ void setupdisplays(){
 
   // Init OLED display on bus number 5
   TCA9548A(4);
+  
+  // This statement secures the scenario if the allocation fails
   if(!display4.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    // If debugging is turned on print the error message
     if(DEBUG)
       Serial.println(F("SSD1306 allocation failed"));
     for(;;);
@@ -61,7 +84,10 @@ void setupdisplays(){
 
   // Init OLED display on bus number 5
   TCA9548A(5);
+  
+  // This statement secures the scenario if the allocation fails
   if(!display5.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    // If debugging is turned on print the error message
     if(DEBUG)
       Serial.println(F("SSD1306 allocation failed"));
     for(;;);
@@ -70,74 +96,75 @@ void setupdisplays(){
   display5.clearDisplay();  
 }
 
+void display_draw_bitmap(Adafruit_SSD1306 *display_d,int index,const unsigned char *bitmap,String pos)
 // Function to draw bitmap on the display
-void display_draw_bitmap(Adafruit_SSD1306 *display_d,int index,const unsigned char *bitmap,String pos){
+{
+  // Different positioning options
+  // MID_WIDE position handles the icons that take up a whole display
   if(pos=="mid_wide"){
-    display_d->drawBitmap(0, 0,bitmap, 128, 64, WHITE);
-  }
+    display_d->drawBitmap(0, 0,bitmap, 128, 64, WHITE);}
+  // LEFT half of display display, for symbols that take up half the display in size
   else if(pos=="left"){
-    display_d->drawBitmap(0, 0,bitmap, 48, 64, WHITE);
-  }
+    display_d->drawBitmap(0, 0,bitmap, 48, 64, WHITE);}
+  // RIGHT half of the display, for symbols that take up half the display in size
   else if(pos=="right"){
-    display_d->drawBitmap(80, 0,bitmap, 48, 64, WHITE);
-  }
+    display_d->drawBitmap(80, 0,bitmap, 48, 64, WHITE);}
+  // MIDDLE part of the display, for symbols that take up half the display in size
   else if(pos=="mid"){
-    display_d->drawBitmap(40, 0,bitmap, 48, 64, WHITE);
-  }
+    display_d->drawBitmap(40, 0,bitmap, 48, 64, WHITE);}
 }
 
-// Function to clear displays
-void clear_display(){
-  TCA9548A(1);
-  display1.clearDisplay();
-  display1.display();
-  
-  TCA9548A(2);
-  display2.clearDisplay();
-  display2.display(); 
-  
-  TCA9548A(3);
-  display3.clearDisplay();
-  display3.display();
-  
-  TCA9548A(4);
-  display4.clearDisplay();
-  display4.display();
-  
-  TCA9548A(5);
-  display5.clearDisplay();
-  display5.display();
+void display_clear(Adafruit_SSD1306 *display_d,int index)
+// Function to clear selected display
+{
+  // Select multiplexer address
+  TCA9548A(index);
+
+  // Clear selected display
+  display_d->clearDisplay();
+
+  // Apply changes in the buffer to the display comms
+  display_d->display();
 }
 
-// Function to test displays during start-up
-void testdisplay(){
-  TCA9548A(1);
-  display1.clearDisplay();
-  display_draw_bitmap(&display1,1,bitmap_selector("wifi"),"mid_wide");
-  display1.display();
-  
-  TCA9548A(2);
-  display2.clearDisplay();
-  display_draw_bitmap(&display2,2,bitmap_selector("wifi"),"mid_wide");
-  display2.display(); 
-  TCA9548A(3);
-  display3.clearDisplay();
-  display_draw_bitmap(&display3,3,bitmap_selector("wifi"),"mid_wide");
-  display3.display();
-  
-  TCA9548A(4);
-  display4.clearDisplay();
-  display_draw_bitmap(&display4,4,bitmap_selector("wifi"),"mid_wide");
-  display4.display();
-  
-  TCA9548A(5);
-  display5.clearDisplay();
-  display_draw_bitmap(&display5,5,bitmap_selector("wifi"),"mid_wide");
-  display5.display();
+void displays_clear()
+// Function to clear all displays. Helper function only used for startup
+{
+  display_clear(&display1,1);
+  display_clear(&display2,2);
+  display_clear(&display3,3);
+  display_clear(&display4,4); 
+  display_clear(&display5,5);
 }
 
+void display_fill(Adafruit_SSD1306 *display_d,int index,String bitmap){
+  // Select multiplexer address
+  TCA9548A(index);
+
+  // Clear selected display
+  display_d->clearDisplay();
+
+  // Fill the display with desired bits
+  display_draw_bitmap(display_d,index,bitmap_selector(bitmap),"mid_wide");
+
+  // Apply set buffer changes to the display comms
+  display_d->display();  
+}
+
+
+void displays_fill(String bitmap)
+// Function to test all displays during start-up. Helper function only used for startup
+{
+  display_fill(&display1,1,bitmap);
+  display_fill(&display2,2,bitmap);
+  display_fill(&display3,3,bitmap);
+  display_fill(&display4,4,bitmap);
+  display_fill(&display5,5,bitmap); 
+}
+
+void printWifiStatus()
 // Print out Wi-Fi status
-void printWifiStatus() {
+{
   // print the SSID of the network you're attached to:
   
   // If TERMINAL output is allowed then print out status message
@@ -161,8 +188,9 @@ void printWifiStatus() {
   }
 }
 
+bool connectwifi()
 // Setup Wi-Fi connection
-bool connectwifi(){
+{
   // Create WiFiManager object
   WiFiManager wf;
  
@@ -172,48 +200,31 @@ bool connectwifi(){
   // Remove any previous network settings
   wf.resetSettings();
  
-  // Define a text box, 50 characters maximum
-  // Text box (String)
+  // Define a text boxes for the custom settings - STRINGS
   WiFiManagerParameter custom_text_box_app("key_text1", "Enter selected app here", app_choice, 50); // 50 == max length
-
-  // Text box (String)
   WiFiManagerParameter custom_text_box_cry("key_text2", "Enter selected crypto here", crypto_choice, 50); // 50 == max length
-
-  // Text box (String)
   WiFiManagerParameter custom_text_box_fia("key_text3", "Enter selected fiat here", fiat_choice, 50); // 50 == max length
-
-  // Text box (String)
   WiFiManagerParameter custom_text_box_tim("key_text4", "Enter timezone here", timezone_choice, 50); // 50 == max length
+  WiFiManagerParameter custom_text_box_lat("key_text5", "Enter latitude here", latitude_choice, 15); // 15 == max length
+  WiFiManagerParameter custom_text_box_lon("key_text6", "Enter longitude here", longitude_choice, 15); // 15 == max length 
 
-  // Text box (Number)
-  WiFiManagerParameter custom_text_box_lat("key_text5", "Enter latitude here", latitude_choice, 15);
-
-  // Text box (Number)
-  WiFiManagerParameter custom_text_box_lon("key_text6", "Enter longitude here", longitude_choice, 15); 
-
-  // Text box (Number)
+   // Define a text boxes for the custom settings - NUMBERS
   char convertedValue1[15];
   sprintf(convertedValue1, "%d", contrast_after_sunrise_choice); // Need to convert to string to display a default value.
   WiFiManagerParameter custom_text_box_ris("key_num7", "Enter day display contrast here", convertedValue1, 15); 
 
-  // Text box (Number)
   char convertedValue2[15];
   sprintf(convertedValue2, "%d", contrast_after_sunset_choice); // Need to convert to string to display a default value.
   WiFiManagerParameter custom_text_box_set("key_num8", "Enter night display contrast here", convertedValue2, 15);
 
-  // Text box (Number)
+   // Define a text boxes for the custom settings - BOOL  
   char convertedValue3[10];
-  if(hide_seconds){
-    strcpy(convertedValue3, "true");
-  }
-  else{
-    strcpy(convertedValue3, "false");
-  }
- 
+  if(hide_seconds){strcpy(convertedValue3, "true");}
+  else{strcpy(convertedValue3, "false");}
   WiFiManagerParameter custom_text_box_sho("key_bool9", "Hide seconds in clock app?", convertedValue3, 15);
 
  
-  //add all your parameters here
+  // Setup all the parameters
   wf.addParameter(&custom_text_box_app);
   wf.addParameter(&custom_text_box_cry);
   wf.addParameter(&custom_text_box_fia);
@@ -224,24 +235,29 @@ bool connectwifi(){
   wf.addParameter(&custom_text_box_set);
   wf.addParameter(&custom_text_box_sho);
 
-  //wf.setTimeout(120); //If no access point name has been previously entered disable timeout.
- 
-  if (!wf.startConfigPortal("MoonClock Configuration")) {
-    // Did not connect, print error message
-    Serial.println("failed to connect and hit timeout");
- 
-    // Reset and try again
+  //If no access point name has been previously entered disable timeout.
+  //wf.setTimeout(120);
+
+  // START the config portal
+  if (!wf.startConfigPortal("MoonClock Configuration")){
+    // If the debug is turned on and the statrup failed -> print error message
+    if(DEBUG)
+      Serial.println("failed to connect and hit timeout");
+    
+    // Reset, wait and try again
     ESP.restart();
-    delay(1000);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
  
-  // Connected!
-  Serial.println("WiFi connected");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-  Serial.print("\nApp: ");
+  // If debug is turned on print out the success message
+  if(DEBUG){
+    Serial.println("WiFi connected");
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+    Serial.print("\nApp: ");
+  }
   
-  // Lets deal with the user config values
+  // Deal with the user config values
   strncpy(app_choice,  custom_text_box_app.getValue(), sizeof(app_choice));
   strncpy(crypto_choice,  custom_text_box_cry.getValue(), sizeof(crypto_choice));
   strncpy(fiat_choice,  custom_text_box_fia.getValue(), sizeof(fiat_choice));
