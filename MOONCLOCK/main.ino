@@ -14,7 +14,7 @@
 #include "apps.h"
 
 // Setup
-void setup() {
+void setup(){
   // If TERMINAL output is needed, initialize it
   if(DEBUG)
     Serial.begin(115200);
@@ -36,11 +36,10 @@ void setup() {
   displays_clear();
 }
 
-void loop() {
-  // If Wi-Fi connects then start an app that has been selected during the settings
-  if ((WiFi.status() == WL_CONNECTED)){
-    App_Selector(String(app_choice),String(crypto_choice),String(fiat_choice),String(timezone_choice),String(latitude_choice),String(longitude_choice),contrast_after_sunrise_choice,contrast_after_sunset_choice,hide_seconds);}
-  // IF Wi-Fi disconnects then display corresponding symbol
-  else{
-    displays_fill("wifi");}
+void loop(){
+  if (millis() - lastMillis >= 3000){//3600*1000){
+    lastMillis = millis();
+    AutoContrastApp();
+  }
+  App_Selector();
 }

@@ -104,15 +104,26 @@ String get_risetimes(String latitude = "50.073611",String longitude = "14.435664
   return " ";
 }
 
-void AutoContrastApp(String timezone, int contrast_after_sunrise = 100, int contrast_after_sunset = 0,String latitude = "50.073611",String longitude = "14.435664"){
-
-  String timestamp = get_time(timezone);
+void AutoContrastApp(){
+  // If TERMINAL output is allowed then print out status message
+  if(DEBUG)
+    Serial.print("Running autocontrast");
+  
+  String timestamp = get_time(timezone_choice);
   String stamp = String(timestamp[11])+String(timestamp[12]);
   String sunrise_time = get_risetimes("50.073611","14.435664",false);
   String sunset_time = get_risetimes("50.073611","14.435664",true);
 
+  if(DEBUG)
+    Serial.print("Sunset: ");
+    Serial.print(sunset_time.toInt());
+    Serial.print("Sunrise: ");
+    Serial.print(sunrise_time.toInt());
+    Serial.print("Time: ");
+    Serial.print(stamp.toInt());
+
   if (sunset_time.toInt() <= timestamp.toInt()){
-    set_contrast(contrast_after_sunset);
+    set_contrast(contrast_after_sunset_choice);
 
     
     // If TERMINAL output is allowed then print out status message
@@ -120,12 +131,14 @@ void AutoContrastApp(String timezone, int contrast_after_sunrise = 100, int cont
       Serial.print("changing contrast after sunset");
   }
   else if (sunrise_time.toInt() <= timestamp.toInt()){
-    set_contrast(contrast_after_sunrise);
+    set_contrast(contrast_after_sunrise_choice);
 
     // If TERMINAL output is allowed then print out status message
     if(DEBUG)  
       Serial.print("changing contrast after sunrise");
   }
+  // Waiting for an hour would be: (1000*3600)
+  vTaskDelay(1000 / portTICK_RATE_MS);
 } 
 
 /* App: BlockHeight
@@ -265,7 +278,7 @@ void display_price(float number = 0,bool decimals=true,String selected_coin = "b
   display5.display();  
 }
 
-void CryptoApp(String selected_coin,String selected_fiat){
+void CryptoApp(String selected_coin,String selected_fiat){ 
   if ((WiFi.status() == WL_CONNECTED)){
     HTTPClient http;
 
@@ -303,6 +316,10 @@ void CryptoApp(String selected_coin,String selected_fiat){
     display_price(selected_coin_f,true,selected_coin,selected_fiat);
     http.end();
   }
+  else{
+    Serial.print("WIFI NOT CONNECTED!");
+  }
+  
   vTaskDelay(10000 / portTICK_PERIOD_MS);
 }
 
@@ -933,14 +950,18 @@ void Temperature(String city, String api_key, String units){
  * Revision: Filip Hanus, 30/07/2022 
  */
 
-void App_Selector(String app_choice,String crypto_choice,String fiat_choice,String timezone_choice,String latitude_choice,String longitude_choice,int contrast_after_sunrise_choice,int contrast_after_sunset_choice, bool hide_seconds){
-  if(app_choice=="BlockHeight"){BlockHeight();}
-  else if(app_choice=="CryptoApp"){CryptoApp(String(crypto_choice),String(fiat_choice));}
-  else if(app_choice=="Difficulty"){Difficulty();}
-  else if(app_choice=="Fees"){Fees();}
-  else if(app_choice=="Halving"){Halving();}
-  else if(app_choice=="MarketCap"){MarketCap(String(crypto_choice),String(fiat_choice));}
-  else if(app_choice=="MoscowTimeApp"){MoscowTimeApp();}
-  else if(app_choice=="TimeApp"){TimeApp(String(timezone_choice), bool(hide_seconds));}
+void App_Selector(){
+  if(DEBUG)
+    Serial.print("Running App Selector: ");
+    Serial.print(app_choice);
+  
+  if(strcmp(app_choice, "BlockHeight") == 0){BlockHeight();}
+  else if(strcmp(app_choice, "CryptoApp") == 0){CryptoApp(String(crypto_choice),String(fiat_choice));}
+  else if(strcmp(app_choice, "Difficulty") == 0){Difficulty();}
+  else if(strcmp(app_choice, "Fees") == 0){Fees();}
+  else if(strcmp(app_choice, "Halving") == 0){Halving();}
+  else if(strcmp(app_choice, "MarketCap") == 0){MarketCap(String(crypto_choice),String(fiat_choice));}
+  else if(strcmp(app_choice, "MoscowTimeApp") == 0){MoscowTimeApp();}
+  else if(strcmp(app_choice, "TimeApp") == 0){TimeApp(String(timezone_choice), bool(hide_seconds));}
 }
  

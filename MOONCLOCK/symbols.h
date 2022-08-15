@@ -3221,6 +3221,4 @@ const unsigned char* bitmap_selector(String tag){
     const unsigned char *bitmap = bitmap_EMPTY;
     return bitmap;}
 }
-
-
 ////

@@ -50,3 +50,5 @@ char longitude_choice[15] = "14.435664";
 int contrast_after_sunrise_choice = 100;
 int contrast_after_sunset_choice = 0;
 bool hide_seconds = true;
+
+unsigned long lastMillis = 0;
