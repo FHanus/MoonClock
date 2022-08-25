@@ -1,7 +1,7 @@
 /* SETUP.H
  * 
  * Contains all the initializations of libraries and components
- * Revision: Filip Hanus, 30/07/2022
+ * Revision: Filip Hanus, 25/08/2022
  */
 
 // Wi-Fi and HTTP requests related libraries
@@ -9,6 +9,8 @@
 #include <ArduinoJson.h>
 #include <SPIFFS.h>
 #include <HTTPClient.h>
+#include <time.h>
+#include <sntp.h>
 
 // Include WiFiManager Library
 #include <WiFiManager.h>
@@ -33,22 +35,29 @@ Adafruit_SSD1306 display5(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 // Turn debugging print outs on/off
 #define DEBUG true
 
-// Global variable used to turn on/off the web handler for config updater
-bool shouldSaveConfig = true;
-bool configuration = true;
+// NTP server for time
+const char* ntpServer1 = "pool.ntp.org";
+const char* ntpServer2 = "time.nist.gov";
 
-// Enter your WiFi SSID and password
-char chSSID[] = "TALKTALK694114";             // your network SSID (name)
-char chPassword[] = "9E6JAYT6";    // your network password (use for WPA, or use as key for WEP)
-
+// User default app choices
 char app_choice[15]= "CryptoApp";
 char crypto_choice [15] = "bitcoin";
 char fiat_choice [15]= "usd";
-char timezone_choice[20] = "Europe/Prague";
+char timezone_choice[40] = "CET-1CEST,M3.5.0,M10.5.0/3";  // TimeZone rule for Europe/Rome including daylight adjustment rules (optional)
 char latitude_choice[15] = "50.073611";
 char longitude_choice[15] = "14.435664";
 int contrast_after_sunrise_choice = 100;
 int contrast_after_sunset_choice = 0;
 bool hide_seconds = true;
 
+// WiFi config variable
+bool portalRunning = false;
+
+// Global variable used to turn on/off the web handler for config updater
+bool shouldSaveConfig = false;
+bool configuration = true;
+
+// Timer variables
+unsigned long startTime = 0;
 unsigned long lastMillis = 0;
+float last_call = 0;

@@ -1,7 +1,7 @@
 /* UTILS.H
  * 
  * Contains all the initialization functions
- * Revision: Filip Hanus, 12/08/2022
+ * Revision: Filip Hanus, 25/08/2022
  */
 
 void TCA9548A(uint8_t bus)
@@ -151,7 +151,6 @@ void display_fill(Adafruit_SSD1306 *display_d,int index,String bitmap){
   display_d->display();  
 }
 
-
 void displays_fill(String bitmap)
 // Function to test all displays during start-up. Helper function only used for startup
 {
@@ -165,8 +164,7 @@ void displays_fill(String bitmap)
 void printWifiStatus()
 // Print out Wi-Fi status
 {
-  // print the SSID of the network you're attached to:
-  
+  // print the SSID of the network you're attached to
   // If TERMINAL output is allowed then print out status message
   if(DEBUG){
     Serial.print("SSID: ");
@@ -188,18 +186,108 @@ void printWifiStatus()
   }
 }
 
-bool connectwifi()
-// Setup Wi-Fi connection
+String request_data(String request_url)
+// Start HTTP client and request data from a desired URL, return the requested data in json format
 {
-  // Create WiFiManager object
-  WiFiManager wf;
+  if ((WiFi.status() == WL_CONNECTED)){
+    HTTPClient http;
+    // Setup url for requests
+    String apiUrl(request_url);
+    http.begin (apiUrl);
+    
+    int httpCode = http.GET();
+    
+    if (httpCode > 0) {
+    }
+      
+    //vTaskDelay(100 / portTICK_PERIOD_MS);
+    
+    // Request data from the url
+    String payload = http.getString();
+
+    // End the http connection
+    http.end();
+
+    // Return data
+    return payload;
+  }
+  else{
+    return "{""bitcoin"":{""usd"":66666}}";
+  }
+}
  
-  // Supress Debug information
-  wf.setDebugOutput(false);
- 
-  // Remove any previous network settings
-  wf.resetSettings();
- 
+void saveConfigCallback () 
+//callback notifying us of the need to save config
+{
+  Serial.println("Should save config");
+  shouldSaveConfig = true;
+}
+
+void run_config_manager()
+// Setup Wi-Fi connection and run config manager
+{
+  // Debug info
+  if(DEBUG)
+    Serial.println("mounting FS...");
+    
+  // Mount SPIFFS memory and load the last stored choices
+  if (SPIFFS.begin()) {
+    // Debug info
+    if(DEBUG)
+      Serial.println("mounted file system");
+      
+    // If there is file called config:
+    if (SPIFFS.exists("/config.json")){      
+      // Debug info
+      if(DEBUG)
+        Serial.println("reading config file");
+        
+      //file exists, reading and loading 
+      File configFile = SPIFFS.open("/config.json", "r");
+      if (configFile){
+        if(DEBUG)
+          Serial.println("opened config file");
+        // Get the file size   
+        size_t size = configFile.size();
+        // Allocate a buffer to store contents of the file.
+        std::unique_ptr<char[]> buf(new char[size]);
+
+        // Read the file
+        configFile.readBytes(buf.get(), size);
+
+        // Format the file
+        DynamicJsonDocument json(1024);
+        auto deserializeError = deserializeJson(json, buf.get());
+        serializeJson(json, Serial);
+
+        // Process the variables in the file
+        if ( ! deserializeError ) {
+          if(DEBUG)
+            Serial.println("\nparsed json");
+            
+          strcpy(app_choice, json["app_choice"]);
+          strcpy(crypto_choice, json["crypto_choice"]);
+          strcpy(fiat_choice, json["fiat_choice"]);
+          strcpy(timezone_choice, json["timezone_choice"]);
+          strcpy(latitude_choice, json["latitude_choice"]);
+          strcpy(longitude_choice, json["longitude_choice"]);
+          contrast_after_sunrise_choice = int(json["contrast_after_sunrise_choice"]);
+          contrast_after_sunset_choice = int(json["contrast_after_sunset_choice"]);
+          hide_seconds = bool(json["hide_seconds"]);
+
+        } else {
+          if(DEBUG)
+            Serial.println("failed to load json config");
+        }
+        // Close the file
+        configFile.close();
+      }
+    }
+  } else {
+    if(DEBUG)
+      Serial.println("failed to mount FS");
+  }
+
   // Define a text boxes for the custom settings - STRINGS
   WiFiManagerParameter custom_text_box_app("key_text1", "Enter selected app here", app_choice, 50); // 50 == max length
   WiFiManagerParameter custom_text_box_cry("key_text2", "Enter selected crypto here", crypto_choice, 50); // 50 == max length
@@ -223,7 +311,18 @@ bool connectwifi()
   else{strcpy(convertedValue3, "false");}
   WiFiManagerParameter custom_text_box_sho("key_bool9", "Hide seconds in clock app?", convertedValue3, 15);
 
+  // Create WiFiManager object
+  WiFiManager wf;
+
+  //set config save notify callback
+  wf.setSaveConfigCallback(saveConfigCallback);
  
+  // Supress Debug information
+  if(DEBUG)
+    wf.setDebugOutput(true);
+  else
+    wf.setDebugOutput(false);
+
   // Setup all the parameters
   wf.addParameter(&custom_text_box_app);
   wf.addParameter(&custom_text_box_cry);
@@ -235,11 +334,14 @@ bool connectwifi()
   wf.addParameter(&custom_text_box_set);
   wf.addParameter(&custom_text_box_sho);
 
+  // Remove any previous network settings
+  wf.resetSettings();
+
   //If no access point name has been previously entered disable timeout.
   //wf.setTimeout(120);
 
   // START the config portal
-  if (!wf.startConfigPortal("MoonClock Configuration")){
+  if (!wf.autoConnect("MoonClock Configuration","bitcoin")){
     // If the debug is turned on and the statrup failed -> print error message
     if(DEBUG)
       Serial.println("failed to connect and hit timeout");
@@ -254,7 +356,6 @@ bool connectwifi()
     Serial.println("WiFi connected");
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
-    Serial.print("\nApp: ");
   }
   
   // Deal with the user config values
@@ -268,6 +369,36 @@ bool connectwifi()
   contrast_after_sunset_choice = atoi(custom_text_box_set.getValue());
   hide_seconds = (strncmp(custom_text_box_sho.getValue(), "t", 1));
 
+  // Save the custom parameters to FS
+  if (shouldSaveConfig) {
+    if(DEBUG)
+      Serial.println("saving config");
+
+    // Save into the json structure
+    DynamicJsonDocument json(1024);
+    json["app_choice"] = app_choice;
+    json["crypto_choice"] = crypto_choice;
+    json["timezone_choice"] = timezone_choice;
+    json["latitude_choice"] = latitude_choice;
+    json["longitude_choice"] = longitude_choice;
+    json["contrast_after_sunrise_choice"] = contrast_after_sunrise_choice;
+    json["contrast_after_sunset_choice"] = contrast_after_sunset_choice;
+    json["hide_seconds"] = String(hide_seconds);
+
+    // Open file for writing
+    File configFile = SPIFFS.open("/config.json", "w");
+    if (!configFile) {
+      if(DEBUG)
+        Serial.println("failed to open config file for writing");
+    }
+
+    // Enter the data and close
+    serializeJson(json, Serial);
+    serializeJson(json, configFile);
+
+    configFile.close();
+    //end save
+  }
+  // Print debug wifi status
   printWifiStatus();
-  return true;
 }

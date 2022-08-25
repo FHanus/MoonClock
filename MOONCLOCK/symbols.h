@@ -3028,7 +3028,7 @@ const unsigned char* bitmap_selector(String tag){
   else if(tag == "divide"){
     const unsigned char *bitmap = bitmap_DIVIDE;
     return bitmap;}
-  else if(tag == "doge"){
+  else if(tag == "dogecoin"){
     const unsigned char *bitmap = bitmap_DOGE;
     return bitmap;}
   else if(tag == "usd"){
