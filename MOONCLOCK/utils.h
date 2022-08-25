@@ -137,7 +137,9 @@ void displays_clear()
   display_clear(&display5,5);
 }
 
-void display_fill(Adafruit_SSD1306 *display_d,int index,String bitmap){
+void display_fill(Adafruit_SSD1306 *display_d,int index,String bitmap)
+// Redundant function for drawing on one display
+{
   // Select multiplexer address
   TCA9548A(index);
 
