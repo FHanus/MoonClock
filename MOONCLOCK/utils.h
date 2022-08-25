@@ -343,7 +343,9 @@ void run_config_manager()
   //wf.setTimeout(120);
 
   // START the config portal
-  if (!wf.autoConnect("MoonClock Configuration","bitcoin")){
+  //wf.startConfigPortal("MoonClock Configuration","123456789");
+  //wf.autoConnect("MoonClock Configuration");
+  if (!wf.autoConnect("MoonClock Configuration")){
     // If the debug is turned on and the statrup failed -> print error message
     if(DEBUG)
       Serial.println("failed to connect and hit timeout");

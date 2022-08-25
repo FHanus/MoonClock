@@ -15,10 +15,14 @@
 
 // Setup
 void setup() {
-  WiFi.mode(WIFI_STA);
-  // If TERMINAL output is needed, initialize it
+  // Startup
   if (DEBUG)
     Serial.begin(115200);
+    Serial.println("Starting");
+    
+  vTaskDelay(500 / portTICK_PERIOD_MS);
+  
+  WiFi.mode(WIFI_STA);
 
   // Debug info
   if (DEBUG)
@@ -70,5 +74,4 @@ void loop() {
   else{
     displays_fill("cross");
   }
-  
 }

@@ -5,15 +5,18 @@
  */
 
 // Wi-Fi and HTTP requests related libraries
-//#include "WiFi.h"
+// Include WiFiManager Library
+#include <WiFiManager.h>
+//#include <WiFi.h>
+
 #include <ArduinoJson.h>
 #include <SPIFFS.h>
 #include <HTTPClient.h>
 #include <time.h>
 #include <sntp.h>
 
-// Include WiFiManager Library
-#include <WiFiManager.h>
+char ssid[] = "Pixel_Filip";  //  your network SSID (name)
+char pass[] = "sendmemes"; // your network password
 
 // Display related libraries
 #include <Wire.h>
