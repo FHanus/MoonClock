@@ -12,11 +12,21 @@ What now?
 
 2. On any device, open Wi-Fi connections and you should see "MoonClock Configuration" access point, tap it and a website should open. If a website doesn't open, open browser and enter "192.168.4.1" in the address bar.
 
-3. Select any necessary settings in the main tab and then update them.
+3. Set up a Wi-Fi connection and if you want to, edit any of the settings in the main tab and then press update.
 
 That's all!
 
 
 ## Want more to know all the possible options?
+
+* app_choice:
+* crypto_choice 
+* fiat_choice 
+* timezone_choice
+* latitude_choice
+* longitude_choice
+* contrast_after_sunrise_choice 
+* contrast_after_sunset_choice
+* hide_seconds 
 
 
