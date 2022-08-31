@@ -33,7 +33,7 @@ eur \ gbp \ usd
 ```
 * timezone_choice
 ```sh
-Copy from here: https://sites.google.com/a/usapiens.com/opnode/time-zones
+https://sites.google.com/a/usapiens.com/opnode/time-zones
 ```
 * contrast_after_sunrise_choice 
 ```sh
