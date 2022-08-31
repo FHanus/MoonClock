@@ -39,15 +39,15 @@ String get_time(String timezone)
   struct tm timeinfo;
 
   // Obtain time data
-  if(!getLocalTime(&timeinfo)){
+  while(!getLocalTime(&timeinfo)){
     Serial.println("No time available (yet)");
-    return "00:00:00";
+    //return "00:00:00";
   }
 
   // Format time data
   char currenttime[10];
   strftime(currenttime,10, "%H:%M:%S", &timeinfo);
-  
+  vTaskDelay(500 / portTICK_PERIOD_MS);
   // Return current time
   return currenttime;
 }

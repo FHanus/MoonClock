@@ -243,6 +243,7 @@ void run_config_manager()
       // Debug info
       if(DEBUG)
         Serial.println("reading config file");
+        SPIFFS.format();
         
       //file exists, reading and loading 
       File configFile = SPIFFS.open("/config.json", "r");
@@ -345,7 +346,7 @@ void run_config_manager()
   // START the config portal
   //wf.startConfigPortal("MoonClock Configuration","123456789");
   //wf.autoConnect("MoonClock Configuration");
-  if (!wf.autoConnect("MoonClock Configuration")){
+  if (!wf.startConfigPortal("MoonClock Configuration")){
     // If the debug is turned on and the statrup failed -> print error message
     if(DEBUG)
       Serial.println("failed to connect and hit timeout");
@@ -382,6 +383,7 @@ void run_config_manager()
     DynamicJsonDocument json(1024);
     json["app_choice"] = app_choice;
     json["crypto_choice"] = crypto_choice;
+    json["fiat_choice"] = fiat_choice;
     json["timezone_choice"] = timezone_choice;
     json["latitude_choice"] = latitude_choice;
     json["longitude_choice"] = longitude_choice;
