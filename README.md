@@ -2,7 +2,7 @@
 
 MoonClock website - https://moonclock.com
 
-This fork is translation of the original app into C language
+This fork is translation of the original app into smoother C language.
 
 ## You have received and unboxed your MoonClock. Congratulations!
 
