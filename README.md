@@ -19,14 +19,14 @@ That's all!
 
 ## Want more to know all the possible options?
 
-* app_choice:
-* crypto_choice 
-* fiat_choice 
-* timezone_choice
-* latitude_choice
-* longitude_choice
-* contrast_after_sunrise_choice 
-* contrast_after_sunset_choice
-* hide_seconds 
+* app_choice : BlockHeight \ CryptoApp \ Difficulty \ Fees \ Halving \ MarketCap \ MoscowTimeApp \ TimeApp
+* crypto_choice : cardano \ algorand \ baked-token \ bitcoin \ chain \ dogecoin \ ethereum \ halving \ kusama \ litecoin \ polkadot \ satoshi \ thorchain \ verasity \ widesatoshi \  
+* fiat_choice : 
+* timezone_choice : 
+* latitude_choice : 
+* longitude_choice : 
+* contrast_after_sunrise_choice : 
+* contrast_after_sunset_choice : 
+* hide_seconds :  
 
 
