@@ -25,35 +25,27 @@ BlockHeight \ CryptoApp \ Difficulty \ Fees \ Halving \ MarketCap \ MoscowTimeAp
 ```
 * crypto_choice
 ```sh
-cardano \ algorand \ baked-token \ bitcoin \ chain \ dogecoin \ ethereum \ halving \ kusama \ litecoin \ polkadot \ satoshi \ thorchain \ verasity \ widesatoshi
+cardano \ algorand \ baked-token \ bitcoin \ chain \ dogecoin \ ethereum \ kusama \ litecoin \ polkadot \ thorchain \ verasity
 ```
 * fiat_choice
 ```sh
-sd
+eur \ gbp \ usd
 ```
 * timezone_choice
 ```sh
-sd
-```
-* latitude_choice
-```sh
-sd
-```
-* longitude_choice
-```sh
-sd
+[Look them up here, copy and paste](https://sites.google.com/a/usapiens.com/opnode/time-zones)
 ```
 * contrast_after_sunrise_choice 
 ```sh
-sd
+0 - 255
 ```
 * contrast_after_sunset_choice
 ```sh
-sd
+0 - 255
 ```
 * hide_seconds
 ```sh
-sd
+true \ false
 ```
 
 
