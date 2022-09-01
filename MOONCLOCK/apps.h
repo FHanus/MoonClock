@@ -716,13 +716,13 @@ void MoscowTimeApp()
 
 /* App: TimeApp
  * Required: display_time (helper function)
- * Inputs: String timezone, bool hide_sec
+ * Inputs: String timezone, bool show_sec
  * 
  * Functionality: Displays current time
  * Revision: Filip Hanus, 16/08/2022
  */
 
-void display_time(String time_unparsed,bool hide_sec)
+void display_time(String time_unparsed,bool show_sec)
 // Display obtained halving on the displays 
 {
   // Separate the data into the separate digits for the displays 
@@ -737,7 +737,7 @@ void display_time(String time_unparsed,bool hide_sec)
 
   // Display the digits on the displays
   // Display without seconds
-  if(hide_sec){
+  if(show_sec){
     TCA9548A(1);
     display1.clearDisplay();
     display_draw_bitmap(&display1,1,bitmap_selector(D1),"left");
@@ -796,7 +796,7 @@ void display_time(String time_unparsed,bool hide_sec)
   }
 }
 
-void TimeApp(String timezone= "Europe/Prague", bool hide_sec=true)
+void TimeApp(String timezone= "Europe/Prague", bool show_sec=true)
 // Obtain and display time
 {
   // Store current processor time
@@ -808,12 +808,12 @@ void TimeApp(String timezone= "Europe/Prague", bool hide_sec=true)
   // Print current time
   if(DEBUG)
     Serial.println("Time: " + String(timestamp));
-   
+
   // If seconds are supposed to be hidden
-  if(hide_sec==false){
-    if(timestamp[6] == 0){
+  if(show_sec==false || show_sec==0){
+    if(String(timestamp[6]) == "0"){
       // Display the current time
-      display_time(timestamp,hide_sec);
+      display_time(timestamp,show_sec);
 
       // Wait until the next minute
       unsigned int delay_i = (60*1000) - (millis()-lastMillis_second);
@@ -821,9 +821,9 @@ void TimeApp(String timezone= "Europe/Prague", bool hide_sec=true)
     }
   }
   // If seconds are supposed to be shown
-  else if(hide_sec==true){
+  else if(show_sec==true || show_sec==1){
     // Display the current time
-    display_time(timestamp,hide_sec);
+    display_time(timestamp,show_sec);
 
     // Wait until the next second
     unsigned int delay_i = 1000 - (millis()-lastMillis_second);
@@ -928,7 +928,7 @@ void App_Selector()
   else if(strcmp(app_choice, "Halving") == 0){Halving();}
   else if(strcmp(app_choice, "MarketCap") == 0){MarketCap(String(crypto_choice),String(fiat_choice));}
   else if(strcmp(app_choice, "MoscowTimeApp") == 0){MoscowTimeApp();}
-  else if(strcmp(app_choice, "TimeApp") == 0){TimeApp(String(timezone_choice), bool(hide_seconds));}
+  else if(strcmp(app_choice, "TimeApp") == 0){TimeApp(String(timezone_choice), bool(show_seconds));}
 }
 
 

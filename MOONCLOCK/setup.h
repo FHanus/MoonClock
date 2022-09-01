@@ -1,7 +1,7 @@
 /* SETUP.H
  * 
  * Contains all the initializations of libraries and components
- * Revision: Filip Hanus, 25/08/2022
+ * Revision: Filip Hanus, 01/09/2022
  */
 
 // Wi-Fi and HTTP requests related libraries
@@ -46,18 +46,22 @@ const char* ntpServer2 = "time.nist.gov";
 char app_choice[15]= "CryptoApp";
 char crypto_choice [15] = "bitcoin";
 char fiat_choice [15]= "usd";
+<<<<<<< Updated upstream
 char timezone_choice[55] = "NST+3:30NDT+2:30,M3.2.0/00:01:00,M11.1.0/00:01:00";  
+=======
+char timezone_choice[55] = "CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00";
+>>>>>>> Stashed changes
 char latitude_choice[15] = "50.073611";
 char longitude_choice[15] = "14.435664";
 int contrast_after_sunrise_choice = 100;
 int contrast_after_sunset_choice = 0;
-bool hide_seconds = true;
+bool show_seconds = true;
 
 // WiFi config variable
 bool portalRunning = false;
 
 // Global variable used to turn on/off the web handler for config updater
-bool shouldSaveConfig = false;
+bool shouldSaveConfig = true;
 bool configuration = true;
 
 // Timer variables

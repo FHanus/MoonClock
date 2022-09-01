@@ -1,7 +1,7 @@
 /* UTILS.H
  * 
  * Contains all the initialization functions
- * Revision: Filip Hanus, 25/08/2022
+ * Revision: Filip Hanus, 01/09/2022
  */
 
 void TCA9548A(uint8_t bus)
@@ -28,7 +28,7 @@ void setupdisplays()
 // Allocate displays
 {
   // Start I2C communication with the Multiplexer
-  Wire.begin();
+  Wire.begin(10,11);
 
   // Init OLED display on bus number 2 (display 1)
   TCA9548A(1);
@@ -231,6 +231,7 @@ void run_config_manager()
   // Debug info
   if(DEBUG)
     Serial.println("mounting FS...");
+    //SPIFFS.format();
     
   // Mount SPIFFS memory and load the last stored choices
   if (SPIFFS.begin()) {
@@ -243,8 +244,7 @@ void run_config_manager()
       // Debug info
       if(DEBUG)
         Serial.println("reading config file");
-        SPIFFS.format();
-        
+              
       //file exists, reading and loading 
       File configFile = SPIFFS.open("/config.json", "r");
       if (configFile){
@@ -276,7 +276,7 @@ void run_config_manager()
           strcpy(longitude_choice, json["longitude_choice"]);
           contrast_after_sunrise_choice = int(json["contrast_after_sunrise_choice"]);
           contrast_after_sunset_choice = int(json["contrast_after_sunset_choice"]);
-          hide_seconds = bool(json["hide_seconds"]);
+          show_seconds = bool(json["show_seconds"]);
 
         } else {
           if(DEBUG)
@@ -310,9 +310,9 @@ void run_config_manager()
 
    // Define a text boxes for the custom settings - BOOL  
   char convertedValue3[10];
-  if(hide_seconds){strcpy(convertedValue3, "true");}
+  if(show_seconds){strcpy(convertedValue3, "true");}
   else{strcpy(convertedValue3, "false");}
-  WiFiManagerParameter custom_text_box_sho("key_bool9", "Hide seconds in clock app?", convertedValue3, 15);
+  WiFiManagerParameter custom_text_box_sho("key_bool9", "Show seconds in clock app?", convertedValue3, 15);
 
   // Create WiFiManager object
   WiFiManager wf;
@@ -346,7 +346,7 @@ void run_config_manager()
   // START the config portal
   //wf.startConfigPortal("MoonClock Configuration","123456789");
   //wf.autoConnect("MoonClock Configuration");
-  if (!wf.startConfigPortal("MoonClock Configuration")){
+  if (!wf.autoConnect("MoonClock Configuration")){
     // If the debug is turned on and the statrup failed -> print error message
     if(DEBUG)
       Serial.println("failed to connect and hit timeout");
@@ -372,7 +372,7 @@ void run_config_manager()
   strncpy(longitude_choice,  custom_text_box_lon.getValue(), sizeof(longitude_choice));
   contrast_after_sunrise_choice = atoi(custom_text_box_ris.getValue());
   contrast_after_sunset_choice = atoi(custom_text_box_set.getValue());
-  hide_seconds = (strncmp(custom_text_box_sho.getValue(), "t", 1));
+  show_seconds = (strncmp(custom_text_box_sho.getValue(), "t", 1));
 
   // Save the custom parameters to FS
   if (shouldSaveConfig) {
@@ -389,7 +389,7 @@ void run_config_manager()
     json["longitude_choice"] = longitude_choice;
     json["contrast_after_sunrise_choice"] = contrast_after_sunrise_choice;
     json["contrast_after_sunset_choice"] = contrast_after_sunset_choice;
-    json["hide_seconds"] = String(hide_seconds);
+    json["show_seconds"] = String(show_seconds);
 
     // Open file for writing
     File configFile = SPIFFS.open("/config.json", "w");
