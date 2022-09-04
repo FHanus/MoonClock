@@ -1001,12 +1001,31 @@ Temp:</text>
 <text x="-2.54" y="-2.54" size="1.778" layer="96" rot="R90">&gt;VALUE</text>
 <pin name="VCC" x="0" y="-2.54" visible="off" length="short" direction="sup" rot="R90"/>
 </symbol>
+<symbol name="AGND" urn="urn:adsk.eagle:symbol:26949/1" library_version="1">
+<wire x1="-1.905" y1="0" x2="1.905" y2="0" width="0.254" layer="94"/>
+<wire x1="-1.0922" y1="-0.508" x2="1.0922" y2="-0.508" width="0.254" layer="94"/>
+<text x="-2.54" y="-5.08" size="1.778" layer="96" rot="R90">&gt;VALUE</text>
+<pin name="AGND" x="0" y="2.54" visible="off" length="short" direction="sup" rot="R270"/>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="VCC" urn="urn:adsk.eagle:component:26957/1" prefix="P+" library_version="1">
 <description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
 <gates>
 <gate name="VCC" symbol="VCC" x="0" y="0"/>
+</gates>
+<devices>
+<device name="">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="AGND" urn="urn:adsk.eagle:component:26977/1" prefix="AGND" library_version="1">
+<description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
+<gates>
+<gate name="VR1" symbol="AGND" x="0" y="0"/>
 </gates>
 <devices>
 <device name="">
@@ -9480,6 +9499,7 @@ USE AT YOUR OWN RISK!&lt;p&gt;
 <part name="C7" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-EU" device="C0805" package3d_urn="urn:adsk.eagle:package:23617/2" value="0.1uF"/>
 <part name="FRAME1" library="frames" library_urn="urn:adsk.eagle:library:229" deviceset="FRAME_A_L" device=""/>
 <part name="X2" library="con-JST SH" deviceset="BM04B-SRSS" device="-TB"/>
+<part name="AGND1" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="AGND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -9654,6 +9674,9 @@ USE AT YOUR OWN RISK!&lt;p&gt;
 <instance part="X2" gate="G$1" x="147.32" y="76.2" smashed="yes" rot="R180">
 <attribute name="VALUE" x="148.59" y="86.36" size="1.778" layer="96" rot="R180"/>
 <attribute name="NAME" x="148.59" y="70.358" size="1.778" layer="95" rot="R180"/>
+</instance>
+<instance part="AGND1" gate="VR1" x="71.12" y="66.04" smashed="yes">
+<attribute name="VALUE" x="68.58" y="63.5" size="1.27" layer="96"/>
 </instance>
 </instances>
 <busses>
@@ -10046,6 +10069,14 @@ USE AT YOUR OWN RISK!&lt;p&gt;
 <wire x1="127" y1="76.2" x2="139.7" y2="76.2" width="0.1524" layer="91"/>
 <pinref part="X2" gate="G$1" pin="3"/>
 <label x="119.38" y="76.2" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="AGND" class="0">
+<segment>
+<pinref part="U2" gate="G$1" pin="IO4"/>
+<wire x1="79.8576" y1="71.9328" x2="71.12" y2="71.9328" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="71.9328" x2="71.12" y2="68.58" width="0.1524" layer="91"/>
+<pinref part="AGND1" gate="VR1" pin="AGND"/>
 </segment>
 </net>
 </nets>
